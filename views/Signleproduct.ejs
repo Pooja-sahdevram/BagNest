@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-6">
+      <div class="max-w-lg mx-auto bg-gray-800 rounded-lg shadow-md">
+        <img
+          id="productImage"
+          src=""
+          alt="Product Image"
+          class="w-full rounded-t-lg"
+        />
+        <div class="p-6">
+          <h2 class="text-2xl font-bold mb-2" id="productTitle">
+            Product Title
+          </h2>
+          <p class="mb-4" id="productDescription">
+            This is a brief description of the product. It gives an overview of
+            the key features and benefits to entice potential customers to make
+            a purchase.
+          </p>
+          <p class="mb-4 font-bold" id="productPrice">$0.00</p>
+          <button
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            id="addToCartButton"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          img: params.get("img"),
+          desc: params.get("desc"),
+          price: params.get("price"),
+          id: params.get("id"),
+        };
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const { img, desc, price, id } = getQueryParams();
+        document.getElementById("productImage").src = `/imges/${img}`;
+        document.getElementById("productDescription").innerText = desc;
+        document.getElementById("productPrice").innerText = `$${price}`;
+
+        // Add the product ID to the button's onclick event
+        document.getElementById("addToCartButton").onclick = function (event) {
+          addToCart(event, id);
+        };
+      });
+
+      function addToCart(event, productId) {
+        console.log("Product added to cart:", productId);
+        event.stopPropagation();
+        const url = `/cutomerdata?productid=${encodeURIComponent(productId)}`;
+        window.location.href = url;
+      }
+    </script>
+  </body>
+</html>

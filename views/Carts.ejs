@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Details</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-black text-white">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-4xl font-bold text-center mb-8">Product Details</h1>
+      <% cartItems.forEach(function(item) { %>
+      <div
+        id="item-<%= item._id %>"
+        class="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex mb-4"
+      >
+        <img
+          src="/imges/<%= item.img %>"
+          alt="Product Image"
+          class="w-1/3 h-40 object-cover"
+        />
+        <div class="p-4 flex flex-col justify-between w-2/3">
+          <div>
+            <h2 class="text-3xl font-bold mb-2"><%= item.Productsname %></h2>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold">$<%= item.price %></span>
+            <div class="flex items-center">
+              <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onclick="decrementCount('<%= item._id %>', <%= item.price %>)"
+              >
+                -
+              </button>
+              <span class="mx-4 text-xl font-bold" id="count-<%= item._id %>"
+                >1</span
+              >
+              <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onclick="incrementCount('<%= item._id %>', <%= item.price %>)"
+              >
+                +
+              </button>
+              <button
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-4"
+                onclick="removeItem('<%= item._id %>')"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+      <div class="text-right text-2xl font-bold mt-8">
+        Total: $<span id="total-price">0.00</span>
+      </div>
+    </div>
+    <script>
+      let counts = {};
+      let prices = {};
+
+      // Initialize counts and prices from default values
+      document.addEventListener("DOMContentLoaded", function() {
+        <% cartItems.forEach(function(item) { %>
+          counts["<%= item._id %>"] = 1;
+          prices["<%= item._id %>"] = <%= item.price %>;
+        <% }); %>
+        calculateTotal();
+      });
+
+      function incrementCount(id, price) {
+        if (!counts[id]) counts[id] = 1; // Default to 1
+        if (!prices[id]) prices[id] = price;
+        counts[id]++;
+        document.getElementById("count-" + id).innerText = counts[id];
+        calculateTotal();
+      }
+
+      function decrementCount(id, price) {
+        if (counts[id] > 1) { // Minimum value is 1
+          counts[id]--;
+          document.getElementById("count-" + id).innerText = counts[id];
+          calculateTotal();
+        }
+      }
+
+      function calculateTotal() {
+        let total = 0;
+        for (let id in counts) {
+          total += counts[id] * prices[id];
+        }
+        document.getElementById("total-price").innerText = total.toFixed(2);
+      }
+
+      function removeItem(id) {
+
+        event.stopPropagation();
+        const url = `/remove?id=${encodeURIComponent(id)}`;
+        window.location.href = url;
+
+      }
+    </script>
+  </body>
+</html>
